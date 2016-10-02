@@ -13,4 +13,16 @@ std::string get_working_path() {
     return ( getcwd( temp, MAXPATHLEN ) ? std::string( temp )
                                         : std::string( "" ) );
 }
+
+void exit_with_error( const char* message ) {
+    fprintf( stderr, "[Error] %s\n", message );
+    throw message;
+}
+
+void error_handler() {
+    /*
+     *fprintf( stderr, "Unhandled exception\n" );
+     */
+    std::abort();
+}
 };

@@ -24,7 +24,9 @@ using namespace std;
 
 #define MAXPATHLEN 1024
 std::string get_working_path();
-};
 
+void exit_with_error( const char* message );
+void error_handler();
+};
 
 #endif

@@ -71,4 +71,11 @@ jspm_packages
 *.swp
 oma
 
+*.d
+*.o
+.objs
+
+themis
+themis-debug
+
 

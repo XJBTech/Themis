@@ -19,6 +19,9 @@ bool svn = true;
 };
 
 int main( int argc, char* argv[] ) {
+    /* error handler */
+    std::set_terminate( error_handler );
+
     /* getting workpath */
     std::string working_path = get_working_path();
 #ifdef DEBUG
@@ -39,8 +42,11 @@ int main( int argc, char* argv[] ) {
     std::string config_file = _arg.exist( "config_file" )
                                   ? _arg.value( "config_file" )
                                   : working_path;
-    if ( !_conf.read_config(config_file) ) {
-        cout << "Cannot find config file" << endl;
+#ifdef DEBUG
+    cout << "reading config file " << config_file << endl;
+#endif
+    if ( !_conf.read_config( config_file ) ) {
+        exit_with_error( "Cannot find config file" );
     }
 
     /* pull test file from server */
