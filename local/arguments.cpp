@@ -1,5 +1,7 @@
 #include "arguments.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -52,7 +54,7 @@ struct Arg : public option::Arg {
     }
 };
 enum optionIndex { UNKNOWN, HELP, CONF };
-const option::Descriptor usage[] = {{UNKNOWN, 0, "", "", option::Arg::None,
+const option::Descriptor usage[] = {{UNKNOWN, 0, "", "", Arg::Unknown,
                                      "USAGE: themis id [options]\n\n"
                                      "Options:"},
                                     {HELP, 0, "h", "help", option::Arg::None,
@@ -61,18 +63,23 @@ const option::Descriptor usage[] = {{UNKNOWN, 0, "", "", option::Arg::None,
                                      "  --config -c \tSpecify config file."},
                                     {0, 0, 0, 0, 0, 0}};
 
-bool arguments::process_arguments( int& argc, char**& argv ) const {
+bool arguments::process_arguments( int& argc, char**& argv ) {
     argc -= ( argc > 0 );
     argv += ( argc > 0 );  // skip program name argv[0] if present
-    option::Stats               stats( usage, argc, argv );
-    std::vector<option::Option> options( stats.options_max );
-    std::vector<option::Option> buffer( stats.buffer_max );
-    option::Parser parse( usage, argc, argv, &options[0], &buffer[0] );
+    option::Stats stats( usage, argc, argv );
+
+    option::Option* options =
+        (option::Option*)calloc( stats.options_max, sizeof( option::Option ) );
+    option::Option* buffer =
+        (option::Option*)calloc( stats.buffer_max, sizeof( option::Option ) );
+
+    option::Parser parse( usage, argc, argv, options, buffer );
 
     if ( parse.error() ) return 1;
 
     if ( options[HELP] || argc == 0 ) {
-        option::printUsage( std::cout, usage );
+        int columns = getenv( "COLUMNS" ) ? atoi( getenv( "COLUMNS" ) ) : 80;
+        option::printUsage( fwrite, stdout, usage, columns );
         return 0;
     }
 
@@ -81,11 +88,41 @@ bool arguments::process_arguments( int& argc, char**& argv ) const {
                   << std::string( opt->name, opt->namelen ) << "\n";
     if ( UNKNOWN ) return 0;
 
-    if ( !parse.nonOptionsCount() ) return 0;
+    if ( 0 == parse.nonOptionsCount() ) return 0;
 
-    string test_name = parse.nonOption( 0 );
-    std::cout << "Running tests for " << test_name << std::endl;
+    for ( int i = 0; i < parse.optionsCount(); ++i ) {
+        option::Option& opt = buffer[i];
+        switch ( opt.index() ) {
+            case CONF:
+                std::cout << "Reading configuration from file " << opt.arg
+                          << endl;
+                content_["config_file"] = opt.arg;
+                break;
+            case UNKNOWN:
+                break;
+        }
+    }
 
-    return 0;
+    std::string test_id = parse.nonOption( 0 );
+    content_["test_id"] = test_id;
+
+    return true;
 };
+std::string const& arguments::value( std::string const& entry ) const {
+    std::map<std::string, std::string>::const_iterator ci =
+        content_.find( entry );
+
+    if ( ci == content_.end() ) throw "index does not exist";
+
+    return ci->second;
+}
+
+bool arguments::exist( std::string const& entry ) const {
+    std::map<std::string, std::string>::const_iterator ci =
+        content_.find( entry );
+
+    if ( ci == content_.end() ) return false;
+
+    return true;
+}
 };

@@ -9,6 +9,7 @@
 namespace util {
 
 class config {
+   private:
     std::map<std::string, std::string> content_;
 
    public:
@@ -18,7 +19,6 @@ class config {
                               std::string const& entry ) const;
     bool exist( std::string const& section, std::string const& entry ) const;
 };
-
 };
 
 #endif
