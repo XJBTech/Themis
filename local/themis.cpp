@@ -41,7 +41,7 @@ int main( int argc, char* argv[] ) {
     config      _conf;
     std::string config_file = _arg.exist( "config_file" )
                                   ? _arg.value( "config_file" )
-                                  : working_path;
+                                  : working_path + "/";
 #ifdef DEBUG
     cout << "reading config file " << config_file << endl;
 #endif
@@ -50,6 +50,9 @@ int main( int argc, char* argv[] ) {
     }
 
     /* pull test file from server */
+#ifdef DEBUG
+    cout << "svn repo = " << _conf.value("svn", "repo") << endl;
+#endif
 
     /* check environment */
 
