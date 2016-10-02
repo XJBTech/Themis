@@ -3,8 +3,8 @@
 
 #include <errno.h>
 #include <limits.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -19,10 +19,11 @@
 #include <string>
 #include <vector>
 
-namespace util
-{
-    using namespace std;
+namespace util {
+using namespace std;
 
+#define MAXPATHLEN 1024
+std::string get_working_path();
 };
 
 

@@ -19,6 +19,12 @@ bool svn = true;
 };
 
 int main( int argc, char* argv[] ) {
+    /* getting workpath */
+    std::string working_path = get_working_path();
+#ifdef DEBUG
+    cout << "working path " << working_path << endl;
+#endif
+
     /* parser arguments */
     arguments _arg;
     if ( !_arg.process_arguments( argc, argv ) ) return ( EXIT_FAILURE );
@@ -26,6 +32,15 @@ int main( int argc, char* argv[] ) {
         cout << "Testing " << _arg.value( "test_id" ) << endl;
     } else {
         return 0;
+    }
+
+    /* reading config file */
+    config      _conf;
+    std::string config_file = _arg.exist( "config_file" )
+                                  ? _arg.value( "config_file" )
+                                  : working_path;
+    if ( !_conf.read_config(config_file) ) {
+        cout << "Cannot find config file" << endl;
     }
 
     /* pull test file from server */

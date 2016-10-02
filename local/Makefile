@@ -1,7 +1,7 @@
 CXX = clang++
 CXXFLAGS = -Wall -Wshadow -std=c++1y -stdlib=libc++
 EXENAME = themis
-OBJS = themis.o config.o arguments.o
+OBJS = themis.o config.o arguments.o util.o
 OPTIMIZE = off
 LD = clang++
 WARNINGS = -pedantic -Wall -Werror -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable
