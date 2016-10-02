@@ -12,14 +12,14 @@ ROOT_DIR=$(shell pwd)
 
 CXX = clang++
 LD = clang++
-OBJS = themis.o config.o arguments.o util.o
+OBJS = themis.o config.o arguments.o util.o svn.o
 OBJS_DIR = .objs
 OPTIMIZE = off
 INCLUDES = -I./includes/ -I$(OBJS_DIR)/
 #VPATH = $(OBJS_DIR)
 WARNINGS = -pedantic -Wall -Werror -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable
-LDFLAGS = $(INCLUDES) -std=c++1y -stdlib=libc++ -lc++abi -lpthread $(WARNINGS) 
-CXXFLAGS = $(INCLUDES) -std=c++1y -stdlib=libc++ -MMD -MP $(WARNINGS)
+LDFLAGS = $(INCLUDES) -std=c++11 -stdlib=libc++ -lc++abi -lpthread $(WARNINGS) 
+CXXFLAGS = $(INCLUDES) -std=c++11 -stdlib=libc++ -MMD -MP $(WARNINGS)
 -include $(OBJS_DIR)/*.d
 
 $(OBJS_DIR):
@@ -75,5 +75,5 @@ endif
 
 .PHONY: clean
 clean:
-	@rm -f $(wildcard *.o) $(wildcard *.cgo) $(wildcard *.cga) $(EXENAME) $(CCMONAD) $(IDFILE)
+	@rm -f $(wildcard *.d) $(wildcard *.o) $(wildcard *.cgo) $(wildcard *.cga) $(EXENAME) $(CCMONAD) $(IDFILE)
 	@rm -rf .objs

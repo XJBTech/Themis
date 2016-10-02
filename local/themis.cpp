@@ -29,10 +29,12 @@ int main( int argc, char* argv[] ) {
 #endif
 
     /* parser arguments */
-    arguments _arg;
+    arguments   _arg;
+    std::string test_id;
     if ( !_arg.process_arguments( argc, argv ) ) return ( EXIT_FAILURE );
     if ( _arg.exist( "test_id" ) ) {
-        cout << "Testing " << _arg.value( "test_id" ) << endl;
+        test_id = _arg.value( "test_id" ).c_str();
+        cout << "Testing " << test_id << endl;
     } else {
         return 0;
     }
@@ -49,12 +51,24 @@ int main( int argc, char* argv[] ) {
         exit_with_error( "Cannot find config file" );
     }
 
-    /* pull test file from server */
+/* pull test file from server */
 #ifdef DEBUG
-    cout << "svn repo = " << _conf.value("svn", "repo") << endl;
+    cout << "svn repo = " << _conf.value( "svn", "repo" ) << endl;
 #endif
+    svn _svn_provide(
+        _conf.value( "svn", "repo" ), "." + test_id,
+        _conf.exist( "svn", "username" ) ? _conf.value( "svn", "username" )
+                                         : "",
+        _conf.exist( "svn", "password" ) ? _conf.value( "svn", "password" )
+                                         : "" );
+
+    _svn_provide.checkout( test_id );
 
     /* check environment */
+    config      _conf_remote;
+    if ( !_conf.read_config( "." + test_id + "/.config" ) ) {
+        exit_with_error( "Cannot find config file" );
+    }
 
     /* move file and compile */
 

@@ -22,6 +22,9 @@
 namespace util {
 using namespace std;
 
+#define MAXPIPELEN 4096
+std::string exec( const char* cmd, bool to_stdout );
+
 #define MAXPATHLEN 1024
 std::string get_working_path();
 

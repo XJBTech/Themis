@@ -4,6 +4,7 @@
 #include "util.h"
 #include "config.h"
 #include "arguments.h"
+#include "svn.h"
 
 using namespace std;
 using namespace util;
