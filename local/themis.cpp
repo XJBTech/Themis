@@ -59,7 +59,7 @@ int main( int argc, char* argv[] ) {
 
     _svn_provide.checkout( test_id );
 
-    svn _svn_official("svn://lab.rijnx.com/", "." + test_id + "/.provide", "", "");
+    svn _svn_official("svn://sailorfuku.moe/", "." + test_id + "/.provide", "", "");
     _svn_official.checkout( "provide" );
 
     /* check environment */

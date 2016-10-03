@@ -70,7 +70,7 @@ pair<std::string, double> exec_timer(const char* cmd, bool to_stdout) {
     std::clock_t c_end = std::clock();
     auto t_end = std::chrono::high_resolution_clock::now();
 
-    return pair<std::string, float>(result, code == 1? 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC : 0);
+    return pair<std::string, double>(result, code > 0? 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC : 0);
 }
 
 vector<string> split(string str, char delimiter) {
