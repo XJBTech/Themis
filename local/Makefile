@@ -18,8 +18,8 @@ OPTIMIZE = off
 INCLUDES = -I./includes/ -I$(OBJS_DIR)/
 #VPATH = $(OBJS_DIR)
 WARNINGS = -pedantic -Wall -Werror -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable
-LDFLAGS = $(INCLUDES) -std=c++11 -stdlib=libc++ -lc++abi -lpthread $(WARNINGS) 
-CXXFLAGS = $(INCLUDES) -std=c++11 -stdlib=libc++ -MMD -MP $(WARNINGS)
+LDFLAGS = $(INCLUDES) -std=c++11 -stdlib=libc++ -stdlib=libstdc++ -lpthread $(WARNINGS) 
+CXXFLAGS = $(INCLUDES) -std=c++11 -stdlib=libc++ -stdlib=libstdc++ -MMD -MP $(WARNINGS)
 -include $(OBJS_DIR)/*.d
 
 $(OBJS_DIR):

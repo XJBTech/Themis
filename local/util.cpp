@@ -165,7 +165,7 @@ const char * BLACK      = "\033[39m";
 const char * GREEN      = "\033[32m";
 const char * RED        = "\033[31m";
 const char * LIGHT_BLUE = "\033[1;34m";
-const bool is_color_enabled = isatty(STDOUT_FILENO);
+const bool is_color_enabled = true;
 }
 
 std::string passed_string()
