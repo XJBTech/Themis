@@ -6,6 +6,7 @@ A Judge System
 1. Clone repository
 
 ```sh
+$ rm -rf ~/Themis
 $ git clone https://github.com/XJBTech/Themis ~/Themis
 ```
 
