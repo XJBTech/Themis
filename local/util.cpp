@@ -7,8 +7,11 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <chrono>
 
 namespace util {
+
+using namespace std::chrono;
 
 std::string exec( const char* cmd, bool to_stdout ) {
     char        buffer[MAXPIPELEN];
@@ -30,6 +33,44 @@ std::string exec( const char* cmd, bool to_stdout ) {
     }
     pclose( pipe );
     return result;
+}
+
+double diffclock( clock_t clock1, clock_t clock2 ) {
+
+    double diffticks = clock1 - clock2;
+    double diffms    = diffticks / ( CLOCKS_PER_SEC / 1000 );
+
+    return diffms;
+}
+
+pair<std::string, double> exec_timer(const char* cmd, bool to_stdout) {
+    char        buffer[MAXPIPELEN];
+    std::string result = "";
+
+    std::clock_t c_start = std::clock();
+    auto t_start = std::chrono::high_resolution_clock::now();
+
+    FILE*       pipe   = popen( cmd, "r" );
+    if ( !pipe ) throw std::runtime_error( "popen() failed!" );
+    try {
+        while ( !feof( pipe ) ) {
+            if ( fgets( buffer, MAXPIPELEN, pipe ) != NULL ) {
+                result += buffer;
+                if ( to_stdout ) {
+                    cout << buffer;
+                }
+            }
+        }
+    } catch ( ... ) {
+        pclose( pipe );
+        throw;
+    }
+    int code = pclose( pipe ) / 256;
+
+    std::clock_t c_end = std::clock();
+    auto t_end = std::chrono::high_resolution_clock::now();
+
+    return pair<std::string, float>(result, code == 1? 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC : 0);
 }
 
 vector<string> split(string str, char delimiter) {

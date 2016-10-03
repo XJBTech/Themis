@@ -18,12 +18,14 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 namespace util {
 using namespace std;
 
 #define MAXPIPELEN 4096
 std::string exec( const char* cmd, bool to_stdout );
+pair<std::string, double> exec_timer(const char* cmd, bool to_stdout);
 
 vector<string> split(string str, char delimiter);
 
