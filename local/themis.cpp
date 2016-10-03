@@ -1,15 +1,3 @@
-#include <fcntl.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <time.h>
-#include <unistd.h>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <vector>
-
 #include "themis.h"
 
 namespace themis {};
@@ -61,6 +49,7 @@ int main( int argc, char* argv[] ) {
     cout << "svn repo = " << _conf.value( "svn", "repo" ) << endl;
 #endif
     cout << "Checkint out file from repository..." << endl;
+    util::exec(("rm -rf ." + test_id).c_str(), false);
     svn _svn_provide(
         _conf.value( "svn", "repo" ), "." + test_id,
         _conf.exist( "svn", "username" ) ? _conf.value( "svn", "username" )
@@ -69,6 +58,9 @@ int main( int argc, char* argv[] ) {
                                          : "" );
 
     _svn_provide.checkout( test_id );
+
+    svn _svn_official("svn://lab.rijnx.com/", "." + test_id + "/.provide", "", "");
+    _svn_official.checkout( "provide" );
 
     /* check environment */
     config _conf_remote;
@@ -81,10 +73,11 @@ int main( int argc, char* argv[] ) {
     /* compile helper */
     cout << "Compiling helper program..." << endl;
 #ifdef DEBUG
-    cout << _conf_remote.value( "test", "run" ) << endl;
+    cout << _conf_remote.value( "test", "compile" ) << endl;
 #endif
     chdir( std::string( "." + test_id ).c_str() );
-    util::exec( _conf_remote.value( "test", "run" ).c_str(), true );
+    util::exec( _conf_remote.value( "test", "compile" ).c_str(), false );
 
     /* run tests */
+    util::exec( _conf_remote.value( "test", "run" ).c_str(), true );
 }

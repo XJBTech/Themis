@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 namespace util {
 
@@ -29,6 +30,72 @@ std::string exec( const char* cmd, bool to_stdout ) {
     }
     pclose( pipe );
     return result;
+}
+
+vector<string> split(string str, char delimiter) {
+  vector<string> internal;
+  stringstream ss(str); // Turn the string into a stream.
+  string tok;
+  
+  while(getline(ss, tok, delimiter)) {
+    internal.push_back(tok);
+  }
+  
+  return internal;
+}
+
+// From Monad
+void assertExists(const string & path, int exit_code /* = -1 */)
+{
+    if (!exists(path))
+    {
+        util::exit_with_error("File does not exist.");
+    }
+}
+
+bool exists(const string & path)
+{
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0) return false;
+    if ((st.st_mode & S_IRUSR) == 0) return false;
+
+    if(path == "") throw;
+    if (path[path.length()-1] != '/' &&
+        (path.length() < 2 || !(path[path.length()-2] == '/' && path[path.length()-1] == '.')))
+        return S_ISREG(st.st_mode);
+
+    if ((st.st_mode & S_IXUSR) == 0) return false;
+    return S_ISDIR(st.st_mode);
+}
+
+mode_t permissions(const string & path)
+{
+    struct stat st;
+    if (stat(path.c_str(), &st) != 0) return -1;
+    if ((st.st_mode & S_IRUSR) == 0) return -1;
+
+    return (st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
+}
+
+void copy_file(std::string source, std::string destination) {
+    assertExists(source);
+    vector<string> folders = split(destination, '/');
+    string currdir = "";
+    for (size_t i = 0; i < folders.size() - 1; i++)
+    {
+        currdir += folders[i] + '/';
+        if (!exists(currdir))
+            util::exec(("mkdir -p " + currdir).c_str(), false);
+    }
+    util::exec(("cp \"" + source + "\" \"" +  destination + "\"").c_str(), false);
+}
+
+void copy_files(std::string source, std::string destination, vector<std::string> file_list, bool display) {
+    for (size_t i = 0; i < file_list.size(); i++) {
+        if(display) cout << file_list[i] << "...";
+        copy_file(source+file_list[i], destination+file_list[i]);
+        if(display) cout << "done" << endl;
+    }
 }
 
 // http://stackoverflow.com/questions/2203159/is-there-a-c-equivalent-to-getcwd
