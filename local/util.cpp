@@ -158,4 +158,25 @@ void error_handler() {
      */
     std::abort();
 }
+
+namespace colorize
+{
+const char * BLACK      = "\033[39m";
+const char * GREEN      = "\033[32m";
+const char * RED        = "\033[31m";
+const char * LIGHT_BLUE = "\033[1;34m";
+const bool is_color_enabled = isatty(STDOUT_FILENO);
+}
+
+std::string passed_string()
+{
+    return colorize::make_color(colorize::GREEN, "PASSED");
+}
+
+std::string failed_string()
+{
+    return colorize::make_color(colorize::RED  , "FAILED");
+}
+
+
 };

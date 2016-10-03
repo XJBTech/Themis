@@ -41,6 +41,25 @@ std::string get_working_path();
 
 void exit_with_error( const char* message );
 void error_handler();
+
+// Colorization
+namespace colorize
+{
+	extern const char * BLACK;
+	extern const char * GREEN;
+	extern const char * RED;
+
+	extern const bool is_color_enabled;
+
+	inline string make_color(const char * color, const string & str)
+	{
+		return (is_color_enabled ? color + str + BLACK : str);
+	}
+} // namespace colorize
+
+std::string passed_string();
+std::string failed_string();
+
 };
 
 #endif

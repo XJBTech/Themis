@@ -26,7 +26,7 @@ int main( int argc, char* argv[] ) {
         return 0;
     }
 
-    cout << THEMIS << endl;
+    cout << colorize::make_color(colorize::LIGHT_BLUE, THEMIS) << endl;
 
     /* TODO: auto upgrade */
 
