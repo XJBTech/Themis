@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <vector>
 #include <chrono>
+#include <ctime>
 
 namespace util {
 
@@ -47,8 +48,9 @@ pair<std::string, double> exec_timer(const char* cmd, bool to_stdout) {
     char        buffer[MAXPIPELEN];
     std::string result = "";
 
-    std::clock_t c_start = std::clock();
-    auto t_start = std::chrono::high_resolution_clock::now();
+    using Clock = std::chrono::high_resolution_clock;
+
+    double t_start = Clock::now().time_since_epoch().count();
 
     FILE*       pipe   = popen( cmd, "r" );
     if ( !pipe ) throw std::runtime_error( "popen() failed!" );
@@ -67,10 +69,9 @@ pair<std::string, double> exec_timer(const char* cmd, bool to_stdout) {
     }
     int code = pclose( pipe ) / 256;
 
-    std::clock_t c_end = std::clock();
-    auto t_end = std::chrono::high_resolution_clock::now();
+    double t_end = Clock::now().time_since_epoch().count();
 
-    return pair<std::string, double>(result, code > 0? 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC : 0);
+    return pair<std::string, double>(result, code > 0? t_end - t_start : 0);
 }
 
 vector<string> split(string str, char delimiter) {
