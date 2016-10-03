@@ -34,10 +34,15 @@ int main( int argc, char* argv[] ) {
     if ( !_arg.process_arguments( argc, argv ) ) return ( EXIT_FAILURE );
     if ( _arg.exist( "test_id" ) ) {
         test_id = _arg.value( "test_id" ).c_str();
-        cout << "Testing " << test_id << endl;
     } else {
         return 0;
     }
+
+    cout << THEMIS << endl;
+
+    /* TODO: auto upgrade */
+
+    cout << "Testing " << test_id << endl;
 
     /* reading config file */
     config      _conf;
@@ -55,6 +60,7 @@ int main( int argc, char* argv[] ) {
 #ifdef DEBUG
     cout << "svn repo = " << _conf.value( "svn", "repo" ) << endl;
 #endif
+    cout << "Checkint out file from repository..." << endl;
     svn _svn_provide(
         _conf.value( "svn", "repo" ), "." + test_id,
         _conf.exist( "svn", "username" ) ? _conf.value( "svn", "username" )
@@ -65,12 +71,20 @@ int main( int argc, char* argv[] ) {
     _svn_provide.checkout( test_id );
 
     /* check environment */
-    config      _conf_remote;
-    if ( !_conf.read_config( "." + test_id + "/.config" ) ) {
+    config _conf_remote;
+
+    if ( !_conf_remote.read_config( working_path + "/." + test_id +
+                                    "/.config" ) ) {
         exit_with_error( "Cannot find config file" );
     }
 
-    /* move file and compile */
+    /* compile helper */
+    cout << "Compiling helper program..." << endl;
+#ifdef DEBUG
+    cout << _conf_remote.value( "test", "run" ) << endl;
+#endif
+    chdir( std::string( "." + test_id ).c_str() );
+    util::exec( _conf_remote.value( "test", "run" ).c_str(), true );
 
     /* run tests */
 }

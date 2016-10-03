@@ -31,6 +31,9 @@ bool config::read_config( const std::string& folder_filename ) {
          folder_filename[folder_filename.length() - 1] == '/' ) {
         filename = filename + ".config";
     }
+#ifdef DEBUG
+    cout << "[" << __func__ << "] " << "read config " << filename << endl;
+#endif
     std::ifstream file( filename.c_str() );
     if ( !file.good() ) return false;
     std::string line;
