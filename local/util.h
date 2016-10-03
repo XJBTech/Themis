@@ -48,6 +48,7 @@ namespace colorize
 	extern const char * BLACK;
 	extern const char * GREEN;
 	extern const char * RED;
+	extern const char * LIGHT_BLUE;
 
 	extern const bool is_color_enabled;
 
