@@ -67,11 +67,11 @@ pair<std::string, double> exec_timer(const char* cmd, bool to_stdout) {
         pclose( pipe );
         throw;
     }
-    int code = pclose( pipe ) / 256;
+    double value = pclose( pipe );
 
     double t_end = Clock::now().time_since_epoch().count();
 
-    return pair<std::string, double>(result, code > 0? t_end - t_start : 0);
+    return pair<std::string, double>(result, t_end - t_start);
 }
 
 vector<string> split(string str, char delimiter) {
