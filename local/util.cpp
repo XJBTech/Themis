@@ -161,10 +161,10 @@ void error_handler() {
 
 namespace colorize
 {
-const char * BLACK      = "\033[39m";
-const char * GREEN      = "\033[32m";
-const char * RED        = "\033[31m";
-const char * LIGHT_BLUE = "\033[1;34m";
+const char * BLACK      = "\033[00m";
+const char * GREEN      = "\033[01;32m";
+const char * RED        = "\033[01;31m";
+const char * LIGHT_BLUE = "\033[01;34m";
 const bool is_color_enabled = true;
 }
 
