@@ -1,0 +1,52 @@
+# Makefile for CS233 Lab7
+# Rijn
+# Oct 3, 2016
+
+SHELL = /bin/bash
+ROOT_DIR=$(shell pwd)
+
+SIMULATOR = spim
+FLAGS = -file
+
+OBJS_COMMON = common.s helper_functions.s
+OBJS_COMMON_EVIL = common.s helper_functions_evil.s
+
+OBJS_1_1 = case.s is_complete.s
+OBJS_1_2 = case.s get_unassigned_position.s
+OBJS_2_1 = case.s forward_checking.s
+
+OBJS_2_2 = is_complete_provided.s get_unassigned_position_provided.s forward_checking.s case.s recursive_backtracking.s
+
+OBJS_2_2_EVIL = is_complete_provided_evil.s get_unassigned_position_provided_evil.s forward_checking.s case.s recursive_backtracking.s
+
+.PHONY: all help
+all: clean
+	@echo -e "\033[31mMust specify which part you want to simulate.\033[39m"
+
+append-%.s:%.s
+	@cat $< >> temp
+
+start-simulate:
+	@cat $(OBJS_COMMON) temp > execute
+	@$(SIMULATOR) $(FLAGS) execute | cat > output
+	@rm -f execute temp
+
+start-simulate-evil:
+	@cat $(OBJS_COMMON_EVIL) temp > execute
+	@$(SIMULATOR) $(FLAGS) execute | cat > output
+	@rm -f execute temp
+
+.PHONY: 1.1 1.2 2.1 2.2
+1.1: clean $(OBJS_1_1:%.s=append-%.s) start-simulate
+1.2: clean $(OBJS_1_2:%.s=append-%.s) start-simulate
+2.1: clean $(OBJS_2_1:%.s=append-%.s) start-simulate
+2.2: clean $(OBJS_2_2:%.s=append-%.s) start-simulate
+1.1.evil: clean $(OBJS_1_1:%.s=append-%.s) start-simulate-evil
+1.2.evil: clean $(OBJS_1_2:%.s=append-%.s) start-simulate-evil
+2.1.evil: clean $(OBJS_2_1:%.s=append-%.s) start-simulate-evil
+2.2.evil: clean $(OBJS_2_2_EVIL:%.s=append-%.s) start-simulate-evil
+
+
+.PHONY: clean
+clean:
+	@rm -f execute temp
